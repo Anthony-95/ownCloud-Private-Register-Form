@@ -1,0 +1,385 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+	<head>
+        <meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>ownCloud - Register Form</title>
+		
+		<!-- Main Stylesheet -->
+		<link rel="stylesheet" href="css/main.css" />
+
+        <!-- Server PUSH -->
+        <link rel="preload" href="css/images/intro.svg" as="image">
+
+        <!-- FavIcon -->
+        <link rel="icon" type="image/png" href="favicon.ico">
+        
+        <!-- SpinKit - https://github.com/tobiasahlin/SpinKit -->
+        <style type='text/css'>
+            .spinner {
+                width: 40px;
+                height: 40px;
+                background-color: #fff;
+                
+                -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
+                animation: sk-rotateplane 1.2s infinite ease-in-out;
+            }
+
+            @-webkit-keyframes sk-rotateplane {
+                0% { -webkit-transform: perspective(120px) }
+                50% { -webkit-transform: perspective(120px) rotateY(180deg) }
+                100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
+            }
+
+            @keyframes sk-rotateplane {
+                0% {
+                    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+                    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)
+                } 50% {
+                      transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+                      -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)
+                  } 100% {
+                        transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+                        -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+                    }
+            }
+        </style>
+	</head>
+	<body>
+
+		<!-- Sidebar -->
+			<section id="sidebar">
+				<div class="inner">
+					<nav>
+						<ul>
+							<li><a id="homeMenu" >Start</a></li>
+							<li><a id="oneMenu" >Register</a></li>
+							<li><a id="twoMenu" >Checking</a></li>
+							<li><a id="endMenu" >Login</a></li>
+						</ul>
+					</nav>
+				</div>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+				<!-- Intro -->
+                <section id="intro" class="wrapper style1 fullscreen fade-up" >
+                    <div class="inner">
+                        <h1>ownCloud Server</h1>
+                        <p>You are about to create a new user account, for this you only need an invitation code <span title="Ask your administrator about how to get an invitation code."><i class="fa fa-question-circle" aria-hidden="true"></i></span><br />
+                        This page uses the <a href="https://doc.owncloud.org/server/9.1/admin_manual/configuration_user/user_provisioning_api.html" target="_blank\" >ownCloud user provisioning API</a> and a modified template from <a href="http://html5up.net" target="_blank">HTML5 UP</a></p>
+                        <ul class="actions">
+                            <li><a id="startButton" onclick="startForm();" class="button">Start</a></li>
+                        </ul>
+                    </div>
+                </section>
+
+				<!-- One -->
+                <section id="one" class="wrapper style2 fullscreen fade-up" style="display: none;">
+                    <div class="inner">
+                        <h2>Register</h2>
+                        <p>All fields are required for the sign up process in ownCloud</p>
+                        <section>
+                            <form method="post" id="register-form" action="javascript:register(this);">
+                                <div class="field">
+                                    <label for="code">Invitation code</label>
+                                    <input type="text" name="code" pattern="[A-z0-9]{50}" id="code" required/>
+                                </div>
+                                <div class="field half first">
+                                    <label for="user">User</label>
+                                    <input type="text" name="user" id="user" required minlength="5" maxlength="25"/>
+                                </div>
+                                <div class="field half">
+                                    <label for="name">Name</label>
+                                    <input type="text" name="name" id="name" required minlength="5" maxlength="30"/>
+                                </div>
+                                <div class="field half first">
+                                    <label for="pass">Password</label>
+                                    <input type="password" name="pass" id="pass" minlength="7" required onchange="validatePassword()"/>
+                                </div>
+                                <div class="field half">
+                                    <label for="passconf">Confirmation</label>
+                                    <input type="password" name="passconf" id="passconf" minlength="7" required onkeyup="validatePassword()"/>
+                                </div>
+                                <div class="field">
+                                    <label for="email">Email</label>
+                                    <input type="email" name="email" id="email" required/>
+                                </div>
+                                <div style="text-align: center">
+                                    <div class="field half first">
+                                        <label><a href="https://www.google.com/recaptcha/" target="_blank\">reCAPTCHA</a></label>
+                                        <div style="display: inline-block" id="g-recaptcha-block"></div>
+                                    </div>
+                                    <div class="field half">
+                                        <ul class="actions">
+                                            <label for="code">Terminar</label>
+                                            <li><button type="submit" name="btn-save" id="btn-submit" class="button">¡ Sign Me Up !</button></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+                </section>
+
+				<!-- Two -->
+                <section id="two" class="wrapper style1-alt fullscreen" style="display: none;">
+                    <div class="inner">
+                        <div id="onLoad">
+                            <h2>Wait please...</h2>
+                            <p>In this moment the system is checking if the introduced data is correct and the new user is in creation.</p>
+                            <div style="padding: 10%">
+                                <div id="spin" class="spinner" style="margin: auto;"></div>
+                                <div id="check" style="text-align: center; display: none;">
+                                    <input type="checkbox" checked disabled>
+                                    <label>Completado</label>
+                                </div>
+                            </div>
+                            <div id="noUserIteraction" style="padding-top: 2em">
+                                <a class="button disabled special fit" >This process is automatic and there's not a required action.</a>
+                            </div>
+                        </div>
+                        <div id="offline" style="text-align: center; display: none;">
+                            <h2>The service is not available</h2>
+                            <p>The register server can't be reached or an error has occurred in the application. Try again later.
+                            <br /><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> <strong>You can check the browser console to obtain more information concerning the problem</strong></p>
+                            <div id="serverError"></div>
+                            <a onclick="location.reload();" class="button icon fa-refresh">Refresh</a>
+                        </div>
+                        <div id="onError" style="display: none;">
+                            <h2>Problems Occurred</h2>
+                            <p>The following errors have been found in your registration form, you must correct these problems in order to continue.</p>
+                            <div id="errors"></div>
+                            <a onclick="back();" class="button" >Return to the form</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- End -->
+                <section id="end" class="wrapper style3 fullscreen fade-up" style="display: none;">
+                    <div class="inner" style="text-align: center; padding-top: 2em;">
+                        <h1>¡ Welcome to <a href="https://owncloud.org">ownCloud</a> !</h1>
+                        <p>The registration process has been completed successfully and you are one more.<br />
+                            You can start enjoying your account whenever you want. We'll be waiting for you <span style="color: #000">&#128515;</span></p>
+                        <ul class="actions">
+                            <li><a href="https://your.owncloud.server" class="button special fit">Your ownCloud Server</a></li>
+                        </ul>
+                    </div>
+                </section>
+			</div>
+
+		<!-- Scripts -->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.easing.min.js"></script>
+        <script src="js/skel.min.js"></script>
+        <script src="js/util.js"></script>
+        <script src="js/main.js"></script>
+		
+        <!-- Google reCAPTCHA scripts -->
+        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+
+        <!-- Custom JS code for this page-->
+        <script>
+            // Init script
+            $(document).ready(function(){
+                $('#homeMenu').addClass("active");
+                var code = window.location.href.split('#')[1];
+                if (code) {
+                    // We have the invitation code in the URL
+                    var codeInput = $('#code');
+                    // Complete the code field
+                    codeInput.val(code);
+                    // This field shouldn't be toched
+                    codeInput.prop('readonly', true);
+                    // Remove the code from URL
+                    window.location.replace("#");
+                    // We can delete the hash thanks to HTML5
+                    if (typeof window.history.replaceState == 'function') {
+                        history.replaceState({}, '', window.location.href.slice(0, -1))
+                    }
+                }
+            });
+
+            // Prepare and load reCAPTCHA challenge
+            var g_recaptcha;
+            var onloadCallback = function() {
+                g_recaptcha = grecaptcha.render('g-recaptcha-block', {
+                    'sitekey' : 'YOUR reCAPTCHA PUBLIC KEY'
+                });
+            };
+
+            // Function for validate the password
+            function validatePassword() {
+                var pass1 = document.getElementById('pass');
+                var pass2 = document.getElementById('passconf');
+                if(pass1.value != pass2.value) {
+                    pass2.setCustomValidity("Passwords do not match");
+                } else {
+                    pass2.setCustomValidity('')
+                }
+            }
+
+            // Check the browser compatibility
+            function startForm() {
+                var firefox = typeof InstallTrigger !== 'undefined';
+                var chrome = !!window.chrome && !!window.chrome.webstore;
+
+                // If any of them is compatible continue
+                if (firefox || chrome) {
+                    $('#startButton').html("Start");
+                    introOut()
+                } else {
+                    console.error("Unsupported Browser...");
+                    $('#startButton').html("Unsupported Browser :/");
+                    alert("Sorry but You must use the latest version of Google Chrome or Firefox to complete this form.")
+                }
+            }
+
+            // Transition from HOME to FORM
+            function introOut() {
+                $('#homeMenu').removeClass('active');
+                $('#intro').fadeToggle("fast", "linear", formIn())
+            }
+            function formIn() {
+                $('#oneMenu').addClass('active');
+                $('#one').fadeToggle("slow", "easeInQuart")
+            }
+            // Transition from FORM a SERVER
+            function go() {
+                $('#oneMenu').removeClass('active');
+                $('#one').fadeToggle("fast", "easeInOutQuint", goCheck())
+            }
+            function goCheck() {
+                $('#twoMenu').addClass('active');
+                $('#two').fadeToggle("fast", "easeInOutSine")
+            }
+            // Transition from SERVER a END
+            function endForm() {
+                $('#twoMenu').removeClass('active');
+                $('#two').fadeToggle("slow", "easeOutQuart", showEnd())
+            }
+            function showEnd () {
+                $('#endMenu').addClass('active');
+                $('#end').fadeToggle("fast", "linear")
+            }
+
+            // Function to go back to the form
+            function back() {
+                // New challenge
+                grecaptcha.reset(g_recaptcha);
+                // Recheck the password
+                $('#pass').val("");
+                $('#passconf').val("");
+                // Transition from SERVER a FORM
+                $('#one').show();
+                $('#twoMenu').removeClass('active');
+                $('#two').hide();
+                $('#oneMenu').addClass('active')
+            }
+
+            // Show the error page (FATAL ERROR)
+            function showOffline(error) {
+                if (error) {
+                    $('#serverError').html("Please provide your administrator with the following error code: "
+                            + "<pre>[" + error + "]</pre>")
+                }
+                $('#onLoad').hide();
+                $('#offline').show()
+            }
+            // Show the error page  (USER ERROR)
+            function showError() {
+                $('#onLoad').hide();
+                $('#onError').show()
+            }
+            // Reset the error page
+            function hideError() {
+                $('#onLoad').show();
+                $('#onError').hide()
+            }
+
+            // Marks the process as completed in the UI (1,5 sec of delay)
+            function closeSpin() {
+                $('#spin').fadeOut(500, 'easeOutCubic', passCheck())
+            }
+            function passCheck() {
+                $('#check').fadeIn(1000, 'easeInCubic', setTimeout(function() {endForm()}, 1500))
+            }
+
+            // MAIN Function to handle the form
+            function register(e) {
+                console.log("Starting Registration for the code: " + $('#code').val());
+                // Clear the error page
+                hideError();
+                // Move to the waiting page
+                go();
+                // Prepare the data to be send to the server
+                var data = $("#register-form").serialize();
+
+                /** AJAX Request for the POST operation **/
+                var xPOSTreq = new XMLHttpRequest();
+                // URL that handle the request
+                var url = "ownCloudRegister.php";
+                // Start the AJAX post request
+                xPOSTreq.open("POST", url, true);
+                // Define the format for the request
+                xPOSTreq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                // Handle the response of the POST request
+                xPOSTreq.onreadystatechange = function() { // When the request change it's state
+                    if(xPOSTreq.readyState == 4) {
+                        if (xPOSTreq.status == 200) {
+                            console.log("The request to the server was successful");
+                            // Check the answer
+                            try {
+                                var response = JSON.parse(xPOSTreq.responseText);
+                                if (response.status == "SUCCESS") {
+                                    // The job is done !
+                                    console.log("Job done, the registration is completed !");
+                                    // Show the end page
+                                    closeSpin()
+                                } else if (response.status == "ERROR"){
+                                    // User's Errors
+                                    console.warn("There's one or more errors in the form that need to be correct");
+                                    // Print the errors in the page
+                                    var errors = "<ul>";
+                                    for (var err_msg in response.errors) {
+                                        errors += "<li>" + response.errors[err_msg] + "</li>"
+                                    }
+                                    errors += "</u>";
+                                    $('#errors').html(errors);
+                                    // Error summary page
+                                    showError()
+                                } else {
+                                    // The server has returned an error in some step of the operation
+                                    console.error("Fatal error in the application");
+                                    // Show the offline page
+                                    showOffline(response.status)
+                                }
+                            } catch (e) {
+                                // Error in the parse operation
+                                console.error("An error occurred while interpreting the response to the request - Server Response ("
+                                        + xPOSTreq.response + ")");
+                                // For more information print the exception in console
+                                console.error("Error: " + e);
+                                showOffline(xPOSTreq.response)
+                            }
+                        } else {
+                            // Server or application Error
+                            console.error("There was an error communicating with the server - Error Code (" + xPOSTreq.status + ")");
+                            showOffline()
+                        }
+                    }
+                };
+                // Send the request to the cloud
+                xPOSTreq.send(data);
+                // Prevent the default behavior
+                return false
+            }
+        </script>
+	</body>
+</html>
